@@ -1,0 +1,48 @@
+---
+title: "Function Homework"
+output:
+  html_document:
+    df_print: paged
+---
+Chih Kai Yang
+---
+BIMM143
+---
+Dr. Barry Grant
+---
+Feb. 6, 2018
+---
+Inputs of this function is a single character of PDB file name or four letter PDB identifier inside quotations.
+
+Function generates a line graph with alpha carbon residue on sidechain A of input protein on the x-axis, and B-factor on y-axis. Simply enter function input(PDB file name or PDB identifier) to obtain output graph.
+
+B-factor, or the temperature factor, describes atomic displacement from mean position obtained through protein crystallography. B-factor also describes flexibility of a specific atomic residue on protein. 
+
+Output of the function is a line graph that depicts B-factor of each alpha carbon residue on sidechain A. Rectangle bars on top and bottom of the graph describe secondary structure element. Rectangle bars with darker gray describes alpha helices. Rectangle bars with lighter gray describes beta strands.
+
+Before using the function, use install.packages() to install "bio3d" package.
+
+```{r}
+plot.Ca.bfactor  <- function (x) {
+
+#requires package for function  
+  require(bio3d)
+  
+#read.pdb:read PDB coordinate file with some kind of file accession label (i.e. "4AKE")    
+  pdb_file <- read.pdb(x)
+  
+#trim.pdb:trims PDB object subset of atoms
+  chainA_Ca <- trim.pdb(pdb_file,chain="A",elety="CA")
+
+#select b-factor from trimmed protein data    
+  chainA_Ca.b <- chainA_Ca$atom$b
+  
+#plotb3: draw standard scatter plot with optional secondary structure in the marginal  
+  plotb3(chainA_Ca.b, sse = chainA_Ca, typ="l", ylab="Bfactor")
+}
+```
+
+Example.01: Crystal structure of D-mannose isomerase
+```{r}
+plot.Ca.bfactor("5X32")
+```
